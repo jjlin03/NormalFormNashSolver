@@ -106,12 +106,14 @@ class Model:
 
     def train(self, data, epochs, optimizer=optax.adam(1e-3)):
         """
-        Trains the model.
+        Trains the model. Updates the TrainingState of the model at the end of training.
+        This function has to be ran before test() can be called.
 
         Parameters:
         - data: List of utility tensors of shape (num_batches, num_players, num_actions, ..., num_actions)
+            - List is assumed to be non-empty
         - epochs: Number of epochs the model will train for
-        - optimizer: Optimizer from optax used in model
+        - optimizer: Optimizer from optax class to be used in model
         """
         self.optimizer = optimizer
         initial_params = self.network.init(jax.random.PRNGKey(seed=0), data[0])
@@ -135,7 +137,7 @@ class Model:
         Approximates the Nash Equilibirum of a Normal Form Game.
 
         Parameters:
-        - utilities: Utilities of each player of shape (num_players, num_actions, ..., num_actions)
+        - utilities: Game utility tensor of shape (num_players, num_actions, ..., num_actions)
         
         Returns:
         - Probability distribution over actions for each player
